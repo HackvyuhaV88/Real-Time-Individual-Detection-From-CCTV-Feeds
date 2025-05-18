@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Face Recognition Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Background animation */
+    .animated-bg {
+      position: fixed;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle at center, #d9f2ff 0%, #f9f9f9 100%);
+      z-index: -2;
+      transition: transform 0.2s ease-out;
+    }
+
+    /* Glass effect container */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      padding: 20px 30px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 30px 60px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .logo-container img {
+      height: 330px;position: absolute; top: 00px; right: 00px;
+    }
+
+    /* Button group */
+    .button-container {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .button-container button {
+      font-size: 18px;
+      padding: 14px 32px;
+      margin: 0 15px;
+      background: rgba(255, 255, 255, 0.35);
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .button-container button:hover {
+      background: #f6c85f;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    /* Logs section */
+    .logs-section {
+      max-width: 80%;
+      margin: 30px auto;
+    }
+
+    .logs-section h2 {
+      font-size: 22px;
+      color: #333;
+      border-left: 6px solid #f6c85f;
+      padding-left: 10px;
+      margin-bottom: 10px;
+    }
+
+    pre#logOutput {
+      height: 300px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .button-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="animated-bg" id="animated-bg"></div>
+
+  <!-- Header -->
+  <div class="header glass-card">
+    <h1>Face Recognition Dashboard</h1>
+    
+  </div>
+<div class="logo-container">
+      <img src="C:\Users\amayg\Downloads\Preview__1_-removebg-preview.png" alt="Logo" />
+    </div>
+
+  <!-- Buttons -->
+  <div class="button-container">
+    <button onclick="startSystem()">Start System</button>
+    <button onclick="stopSystem()">Stop System</button>
+  </div>
+
+  <!-- Logs -->
+  <div class="logs-section glass-card">
+    <h2>Recognition Logs:</h2>
+    <pre id="logOutput">Loading logs...</pre>
+  </div>
+
+  <script>
+    function startSystem() {
+      fetch('/start', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => alert(data.status));
+    }
+
+    function stopSystem() {
+      fetch('/stop', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => alert(data.status));
+    }
+
+    function loadLogs() {
+      fetch('/logs')
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('logOutput').textContent = data.logs || 'No logs available.';
+        });
+    }
+
+    setInterval(loadLogs, 5000);
+    window.onload = loadLogs;
+
+    // Background movement based on cursor
+    document.addEventListener('mousemove', e => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 40;
+      const y = (e.clientY / window.innerHeight - 0.5) * 40;
+      document.getElementById('animated-bg').style.transform = `translate(${x}px, ${y}px)`;
+    });
+  </script>
+</body>
+</html>
